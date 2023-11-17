@@ -1,0 +1,165 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Home page</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container-fluid">
+        <h1 class="text-center"> My Favourite Fruit </h1>
+        <div class="row justify-content-center">
+            <div class="col-md-6 border">
+                <div class="row m-2">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                      <a class="nav-link active" aria-current="page" href="#tab1" data-bs-toggle="tab" data-bs-target="#tab1"> Form</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="#tab2" data-bs-toggle="tab" data-bs-target="#tab2">Dashboard</a>
+                    </li> 
+                </ul>  
+            </div>
+                <div class="tab-content">
+                <div id="tab1" class="tab-pane fade show active">
+                <form id="form1">
+                    <div class="mb-3">
+                      <label for="name" class="form-label">Enter your name:</label>
+                      <input type="text" class="form-control" id="name" aria-describedby="name" placeholder="Your name..." required>
+                      
+                    </div>
+                    <p>Select your favourite fruit:</p>
+                    <div class="mb-3">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="Apple" required>
+                            <label class="form-check-label" for="flexRadioDefault1">
+                                <img src="apple.jpg" alt="Apple" width="100px" height="100px">
+                                 Apple
+                            </label>
+                          </div>
+
+                          <div class="form-check  form-check-inline">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" value="Orange" required>
+                            <label class="form-check-label" for="flexRadioDefault2">
+                                <img src="orange.jpg" alt="Orange" width="100px" height="100px">
+                                 Orange
+                            </label>
+                          </div>
+
+                          <div class="form-check  form-check-inline">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3" value="Pineapple" required>
+                            <label class="form-check-label" for="flexRadioDefault3">
+                                <img src="pineapple.jpg" alt="Pineapple" width="100px" height="100px">
+                                 Pineapple
+                            </label>
+                          </div>
+
+                          <div class="form-check  form-check-inline">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault4" value="Pear" required>
+                            <label class="form-check-label" for="flexRadioDefault4">
+                                <img src="pear.jpg" alt="Pear" width="100px" height="100px">
+                                 Pear
+                            </label>
+                          </div>
+
+                          <div class="form-check  form-check-inline">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault5" value="Papaya" required>
+                            <label class="form-check-label" for="flexRadioDefault5">
+                                <img src="papaya.jpg" alt="Papaya" width="100px" height="100px">
+                                 Papaya
+                            </label>
+                          </div>  
+                    </div>
+                    <div class="text-center">
+                    <button type="submit" class="btn btn-success" id="submit">Save My Favourite Fruit</button>
+                </div>
+                  </form>
+                  <div id="thankyou" class="d-none text-center m-2">
+                     <h1>Thank you for your response!</h1>
+                    <button class="btn btn-success" id="ok">OK</button>
+                </div>
+                </div>
+                <div id="tab2" class="tab-pane fade">
+                  <div id="analysisGraph"> </div>
+                </div>
+            </div>
+            </div>
+        </div>
+  </div>
+
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+  <!-- Database Javascript -->
+  <script src="https://cdn.jsdelivr.net/npm/localforage@1.10.0/dist/localforage.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sql.js@1.8.0/dist/sql-wasm.min.js">
+  </script>
+    <!-- Logic Javascript -->
+  <script src="boilerplate.js"></script>
+  <script>
+// Initialize the DB.
+let dbAPI;
+createDbObject();
+async function createDbObject() {
+  dbAPI = await new DB();
+  let result = dbAPI.selectAll("SELECT fruit FROM response");
+ 
+
+// Example usage:
+var myArray = result[0].values;
+var countMap = countRepeatedElements(myArray);
+let array = [], labels = [];
+for (data in countMap) {
+      array.push(countMap[data]);
+      labels.push(data);
+  }
+
+console.log(countMap);
+    let analysisGraph = document.getElementById("analysisGraph");
+    let chart = "{type: 'bar', data: {datasets: [{data: [" + array.toString() + "], backgroundColor: [ 'rgb(255, 99, 132)', 'rgb(255, 159, 64)', 'rgb(255, 205, 86)', 'rgb(75, 192, 192)', 'rgb(54, 162, 235)', 'rgb(255, 235, 59)', 'rgb(50, 205, 50)' ], label: 'Dataset 1',}, ], labels: ['" + labels.join("','") + "'], }, options: { title: { display: true, text: 'Favourite fruit', }, }, } ";
+    let chartUrl = "https://quickchart.io/chart?c=" + chart;
+    const image = document.createElement("img");
+    image.src = chartUrl;
+    image.alt = "Result chart";
+    image.classList.add("img-fluid");
+    analysisGraph.appendChild(image);
+};
+
+   let form1 = document.getElementById("form1");
+   let thankyou = document.getElementById("thankyou");
+   let submit = document.getElementById("submit");
+   let ok = document.getElementById("ok");
+   ok.addEventListener("click", showForm);
+   function countRepeatedElements(arr) {
+    return arr.reduce(function(countMap, element) {
+        countMap[element] = (countMap[element] || 0) + 1;
+        return countMap;
+    }, {});
+}
+   function showForm(){
+      window.location.href = "index.html";
+   }
+   submit.addEventListener("click", storeResult);
+   function storeResult(event){
+    if (form1.checkValidity()) {
+    let name = document.getElementById("name").value;
+    let fruitName = document.querySelector('input[name="flexRadioDefault"]:checked').value;
+    dbAPI.insert("INSERT INTO response VALUES (?, ?, ?)", [Date.now(), name, fruitName]);
+    form1.classList.add("d-none");
+    form1.classList.remove("d-block");
+    thankyou.classList.remove("d-none");
+    thankyou.classList.add("d-block");
+    event.preventDefault();
+    }
+    else {
+        form1.classList.add('was-validated');
+  }
+   }
+
+  </script>
+</body>
+</html>
